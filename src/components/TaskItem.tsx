@@ -137,7 +137,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
       >
         <CardContent sx={{ p: 3 }}>
           {/* メインタスク情報 */}
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             {/* 完了チェックボックス */}
             <Checkbox
               checked={task.completed}
@@ -147,7 +147,6 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                 '&.Mui-checked': {
                   color: '#10b981',
                 },
-                mt: 0.5,
               }}
             />
             
@@ -190,8 +189,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                   </Box>
                   <CustomTypography
                     size="small"
-                    color="muted"
-                    sx={{ fontWeight: 500 }}
+                    sx={{ 
+                      fontWeight: 500,
+                      color: getPriorityColor(task.priority)
+                    }}
                   >
                     {getPriorityLabel(task.priority)}
                   </CustomTypography>
@@ -210,8 +211,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                     />
                     <CustomTypography
                       size="small"
-                      color="muted"
-                      sx={{ fontWeight: 500 }}
+                      sx={{ 
+                        fontWeight: 500,
+                        color: category.color
+                      }}
                     >
                       {category.name}
                     </CustomTypography>
