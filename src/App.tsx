@@ -142,7 +142,7 @@ const theme = createTheme({
 });
 
 /** アプリケーションのバージョン */
-const APP_VERSION = 'v1.0.0';
+const APP_VERSION = 'v1.1.0';
 
 /**
  * メインアプリケーションコンポーネント
@@ -208,7 +208,7 @@ const App: React.FC = () => {
             borderRadius: '32px', // 角丸追加
           }}>
             <CustomTypography variant="body2" color="muted" sx={{ fontWeight: 600 }}>
-              © 2024 Ryuto Kobayashi
+              © 2025 Ryuto Kobayashi
             </CustomTypography>
           </Box>
         </Box>
