@@ -10,13 +10,19 @@ import {
   Bar,
   ReferenceLine,
 } from 'recharts';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import { useAppSelector } from '../hooks/redux';
 import { calculateDailyStats, calculateOverallStats, adjustMaxValue } from '../utils/statsUtils';
+import CustomTypography from '../custom_props/CustomTypography';
 
+/**
+ * タスク統計コンポーネント
+ * 過去7日間のタスク追加・完了状況をグラフで表示
+ */
 const TaskStats: React.FC = () => {
   const tasks = useAppSelector((state) => state.tasks.tasks);
   
+  // チャートデータと統計情報をメモ化
   const chartData = useMemo(() => calculateDailyStats(tasks), [tasks]);
   const overallStats = useMemo(() => calculateOverallStats(tasks), [tasks]);
   
@@ -29,7 +35,13 @@ const TaskStats: React.FC = () => {
 
   console.log(chartData);
 
-  // カスタムツールチップ
+  /**
+   * カスタムツールチップコンポーネント
+   * @param active - ツールチップがアクティブかどうか
+   * @param payload - データペイロード
+   * @param label - ラベル
+   * @returns ツールチップコンポーネント
+   */
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const entry = payload[0];
@@ -43,18 +55,18 @@ const TaskStats: React.FC = () => {
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
           }}
         >
-          <Typography variant="body2" fontWeight={600} color="#2d3748" mb={1}>
+          <CustomTypography variant="body2" sx={{ fontWeight: 600, color: '#2d3748', mb: 1 }}>
             {label}
-          </Typography>
-          <Typography variant="body2" sx={{ color: '#22c55e', fontWeight: 500 }}>
+          </CustomTypography>
+          <CustomTypography variant="body2" sx={{ color: '#22c55e', fontWeight: 500 }}>
             完了: {entry.payload.completedAbs}
-          </Typography>
-          <Typography variant="body2" sx={{ color: '#1976d2', fontWeight: 500 }}>
+          </CustomTypography>
+          <CustomTypography variant="body2" sx={{ color: '#1976d2', fontWeight: 500 }}>
             追加: {entry.payload.addedAbs}
-          </Typography>
-          <Typography variant="body2" sx={{ color: '#8b5cf6', fontWeight: 500 }}>
+          </CustomTypography>
+          <CustomTypography variant="body2" sx={{ color: '#8b5cf6', fontWeight: 500 }}>
             バランス: {entry.payload.cumulativeBalance}
-          </Typography>
+          </CustomTypography>
         </Box>
       );
     }
@@ -65,60 +77,60 @@ const TaskStats: React.FC = () => {
     <Paper
       elevation={0}
       sx={{
-        p: 3,
-        mb: 4,
+        p: 6,
+        mb: 8,
         background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
         border: '1px solid rgba(0, 0, 0, 0.08)',
         borderRadius: 3,
       }}
     >
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h6" fontWeight={700} color="#2d3748" mb={1}>
+      <Box sx={{ mb: 5 }}>
+        <CustomTypography variant="h6" size="large" sx={{ fontWeight: 700, color: '#2d3748', mb: 2 }}>
           タスク統計
-        </Typography>
-        <Typography variant="body2" color="#64748b">
+        </CustomTypography>
+        <CustomTypography variant="body2" color="muted">
           過去7日間のタスク追加・完了状況
-        </Typography>
+        </CustomTypography>
       </Box>
 
       {/* 総合統計 */}
-      <Box sx={{ display: 'flex', gap: 3, mb: 4 }}>
+      <Box sx={{ display: 'flex', gap: 5, mb: 6 }}>
         <Box sx={{ textAlign: 'center', flex: 1 }}>
-          <Typography variant="h4" fontWeight={800} color="#1976d2">
+          <CustomTypography variant="h4" size="large" sx={{ fontWeight: 800, color: '#1976d2' }}>
             {overallStats.totalTasks}
-          </Typography>
-          <Typography variant="body2" color="#64748b" fontWeight={500}>
+          </CustomTypography>
+          <CustomTypography variant="body2" color="muted" sx={{ fontWeight: 500 }}>
             総タスク数
-          </Typography>
+          </CustomTypography>
         </Box>
         <Box sx={{ textAlign: 'center', flex: 1 }}>
-          <Typography variant="h4" fontWeight={800} color="#22c55e">
+          <CustomTypography variant="h4" size="large" sx={{ fontWeight: 800, color: '#22c55e' }}>
             {overallStats.completedTasks}
-          </Typography>
-          <Typography variant="body2" color="#64748b" fontWeight={500}>
+          </CustomTypography>
+          <CustomTypography variant="body2" color="muted" sx={{ fontWeight: 500 }}>
             完了済み
-          </Typography>
+          </CustomTypography>
         </Box>
         <Box sx={{ textAlign: 'center', flex: 1 }}>
-          <Typography variant="h4" fontWeight={800} color="#f97316">
+          <CustomTypography variant="h4" size="large" sx={{ fontWeight: 800, color: '#f97316' }}>
             {overallStats.pendingTasks}
-          </Typography>
-          <Typography variant="body2" color="#64748b" fontWeight={500}>
+          </CustomTypography>
+          <CustomTypography variant="body2" color="muted" sx={{ fontWeight: 500 }}>
             未完了
-          </Typography>
+          </CustomTypography>
         </Box>
         <Box sx={{ textAlign: 'center', flex: 1 }}>
-          <Typography variant="h4" fontWeight={800} color="#8b5cf6">
+          <CustomTypography variant="h4" size="large" sx={{ fontWeight: 800, color: '#8b5cf6' }}>
             {overallStats.completionRate}%
-          </Typography>
-          <Typography variant="body2" color="#64748b" fontWeight={500}>
+          </CustomTypography>
+          <CustomTypography variant="body2" color="muted" sx={{ fontWeight: 500 }}>
             完了率
-          </Typography>
+          </CustomTypography>
         </Box>
       </Box>
 
       {/* グラフ */}
-      <Box sx={{ height: 300 }}>
+      <Box sx={{ height: 340 }}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart 
             data={chartData} 
@@ -163,24 +175,24 @@ const TaskStats: React.FC = () => {
       </Box>
 
       {/* 凡例 */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4, mt: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 6, mt: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Box sx={{ width: 12, height: 12, backgroundColor: '#22c55e', borderRadius: 2 }} />
-          <Typography variant="body2" color="#64748b" fontWeight={500}>
+          <CustomTypography variant="body2" color="muted" sx={{ fontWeight: 500 }}>
             完了
-          </Typography>
+          </CustomTypography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Box sx={{ width: 12, height: 12, backgroundColor: '#1976d2', borderRadius: 2 }} />
-          <Typography variant="body2" color="#64748b" fontWeight={500}>
+          <CustomTypography variant="body2" color="muted" sx={{ fontWeight: 500 }}>
             追加
-          </Typography>
+          </CustomTypography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Box sx={{ width: 12, height: 12, backgroundColor: '#8b5cf6', borderRadius: '50%' }} />
-          <Typography variant="body2" color="#64748b" fontWeight={500}>
+          <CustomTypography variant="body2" color="muted" sx={{ fontWeight: 500 }}>
             バランス
-          </Typography>
+          </CustomTypography>
         </Box>
       </Box>
     </Paper>

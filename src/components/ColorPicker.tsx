@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Button, Popover, Typography } from '@mui/material';
+import { Box, Popover } from '@mui/material';
 import { ChromePicker, ColorResult } from 'react-color';
+import CustomButton from '../custom_props/CustomButton';
+import CustomTypography from '../custom_props/CustomTypography';
 
 interface ColorPickerProps {
   color: string;
@@ -8,17 +10,35 @@ interface ColorPickerProps {
   label?: string;
 }
 
+/**
+ * カラーピッカーコンポーネント
+ * 色選択ボタンとポップオーバーでカラーピッカーを表示
+ * @param color - 現在選択されている色
+ * @param onChange - 色変更時のコールバック関数
+ * @param label - ボタンに表示するラベル
+ */
 const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, label = '色を選択' }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
+  /**
+   * カラーピッカーを開く処理
+   * @param event - クリックイベント
+   */
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
+  /**
+   * カラーピッカーを閉じる処理
+   */
   const handleClose = () => {
     setAnchorEl(null);
   };
 
+  /**
+   * 色変更処理
+   * @param colorResult - 選択された色の情報
+   */
   const handleColorChange = (colorResult: ColorResult) => {
     onChange(colorResult.hex);
   };
@@ -28,18 +48,13 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, label = '色
 
   return (
     <Box>
-      <Button
-        variant="contained"
+      <CustomButton
+        variant="outlined"
+        color="primary"
+        size="medium"
         onClick={handleClick}
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
           minWidth: 120,
-          background: 'linear-gradient(90deg, #1976d2 60%, #1565c0 100%)',
-          '&:hover': {
-            background: 'linear-gradient(90deg, #1565c0 60%, #1976d2 100%)',
-          },
         }}
       >
         <Box
@@ -53,8 +68,11 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, label = '色
             boxShadow: '0 1px 3px 0 rgba(0,0,0,0.1)',
           }}
         />
-        <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600 }}>{label}</Typography>
-      </Button>
+        <CustomTypography variant="body2" sx={{ color: 'inherit', fontWeight: 600 }}>
+          {label}
+        </CustomTypography>
+      </CustomButton>
+      
       <Popover
         id={id}
         open={open}

@@ -1,5 +1,11 @@
 export type Priority = 'urgent' | 'high' | 'medium' | 'low';
 
+export interface Subtask {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -9,6 +15,7 @@ export interface Task {
   completed: boolean;
   createdAt: string;
   updatedAt: string;
+  subtasks?: Subtask[]; // サブタスクを追加
 }
 
 export interface TaskState {

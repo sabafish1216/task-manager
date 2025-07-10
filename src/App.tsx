@@ -1,63 +1,108 @@
 import React from 'react';
-import { Container, CssBaseline, ThemeProvider, createTheme, Box, Typography, AppBar, Toolbar } from '@mui/material';
+import { Container, CssBaseline, ThemeProvider, createTheme, Box, AppBar, Toolbar } from '@mui/material';
 import { Provider } from 'react-redux';
 import { store } from './store';
 import AddTask from './components/AddTask';
 import TaskList from './components/TaskList';
 import AddCategory from './components/AddCategory';
 import TaskStats from './components/TaskStats';
+import CustomTypography from './custom_props/CustomTypography';
 
+/**
+ * アプリケーションのテーマ設定
+ * Material-UIのテーマをカスタマイズ
+ */
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#2563eb', // より鮮やかなブルー
     },
     secondary: {
-      main: '#dc004e',
+      main: '#a21caf', // パープル系
     },
     background: {
-      default: '#f1f5f9',
+      default: '#f3f4f6', // さらに淡いグレー
+      paper: '#fff',
+    },
+    success: {
+      main: '#22c55e',
+    },
+    warning: {
+      main: '#f59e42',
+    },
+    error: {
+      main: '#ef4444',
+    },
+    info: {
+      main: '#0ea5e9',
+    },
+    text: {
+      primary: '#1e293b',
+      secondary: '#64748b',
+    },
+  },
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h5: {
+      fontWeight: 900,
+      letterSpacing: 1.2,
+    },
+    body1: {
+      fontWeight: 600,
+      fontSize: '1.08rem',
+    },
+    caption: {
+      fontWeight: 500,
+      color: '#64748b',
     },
   },
   components: {
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: 32, // さらに丸く
+          boxShadow: '0 8px 32px 0 rgba(60,72,88,0.13)',
+          border: 'none',
         },
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: 32, // さらに丸く
+          boxShadow: '0 4px 24px 0 rgba(60,72,88,0.10)',
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 50,
+          borderRadius: 24,
           textTransform: 'none',
-          fontWeight: 600,
-          boxShadow: '0 2px 8px 0 rgba(25,118,210,0.08)',
-          transition: 'all 0.2s ease-in-out',
+          fontWeight: 700,
+          fontSize: '1.08rem',
+          letterSpacing: 0.5,
+          boxShadow: '0 2px 12px 0 rgba(37,99,235,0.10)',
+          transition: 'all 0.2s cubic-bezier(.4,2,.3,1)',
+          padding: '10px 28px',
+          minHeight: 44,
           '&:hover': {
-            boxShadow: '0 4px 16px 0 rgba(25,118,210,0.15)',
-            transform: 'translateY(-1px)',
+            boxShadow: '0 6px 24px 0 rgba(37,99,235,0.18)',
+            transform: 'translateY(-2px) scale(1.03)',
           },
         },
         contained: {
-          background: 'linear-gradient(90deg, #1976d2 60%, #1565c0 100%)',
+          background: 'linear-gradient(90deg, #2563eb 60%, #1e40af 100%)',
+          color: '#fff',
           '&:hover': {
-            background: 'linear-gradient(90deg, #1565c0 60%, #1976d2 100%)',
+            background: 'linear-gradient(90deg, #1e40af 60%, #2563eb 100%)',
           },
         },
         outlined: {
           borderWidth: 2,
           '&:hover': {
             borderWidth: 2,
-            background: 'rgba(25, 118, 210, 0.08)',
+            background: 'rgba(37,99,235,0.08)',
           },
         },
       },
@@ -65,10 +110,11 @@ const theme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: {
-          borderRadius: 50,
-          transition: 'all 0.2s ease-in-out',
+          borderRadius: 16,
+          transition: 'all 0.2s cubic-bezier(.4,2,.3,1)',
           '&:hover': {
-            transform: 'scale(1.05)',
+            transform: 'scale(1.10)',
+            background: 'rgba(37,99,235,0.08)',
           },
         },
       },
@@ -76,19 +122,32 @@ const theme = createTheme({
     MuiCheckbox: {
       styleOverrides: {
         root: {
-          borderRadius: 50,
+          borderRadius: 12,
           '&:hover': {
-            backgroundColor: 'rgba(25, 118, 210, 0.08)',
-            borderRadius: 50,
+            backgroundColor: 'rgba(37,99,235,0.08)',
+            borderRadius: 12,
           },
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          borderRadius: 16,
+          background: '#f1f5f9',
         },
       },
     },
   },
 });
 
+/** アプリケーションのバージョン */
 const APP_VERSION = 'v1.0.0';
 
+/**
+ * メインアプリケーションコンポーネント
+ * Reduxストアとテーマプロバイダーを設定し、アプリケーション全体のレイアウトを管理
+ */
 const App: React.FC = () => {
 
   return (
@@ -97,27 +156,34 @@ const App: React.FC = () => {
         <CssBaseline />
         <Box sx={{
           minHeight: '100vh',
-          background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+          background: 'linear-gradient(135deg, #f3f4f6 0%, #e0e7ef 100%)',
+          px: { xs: 0, sm: 2, md: 4 },
+          py: { xs: 0, sm: 2, md: 4 },
         }}>
+          {/* ヘッダー */}
           <AppBar position="static" elevation={0} sx={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
-            borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
+            background: 'rgba(255, 255, 255, 0.98)',
+            backdropFilter: 'blur(16px)',
+            borderBottom: '1.5px solid rgba(37,99,235,0.08)',
+            boxShadow: '0 2px 16px 0 rgba(37,99,235,0.04)',
+            py: 2,
           }}>
-            <Toolbar sx={{ justifyContent: 'space-between', px: 3 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Typography variant="h5" color="#2d3748" fontWeight={800} sx={{ letterSpacing: 1 }}>
+            <Toolbar sx={{ justifyContent: 'space-between', px: 5, minHeight: 80 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                <CustomTypography variant="h5" size="large" sx={{ color: '#1e293b', fontWeight: 900, letterSpacing: 1.2 }}>
                   Task Manager
-                </Typography>
-                <Typography variant="caption" color="#64748b" fontWeight={600} sx={{ mt: 0.5 }}>
+                </CustomTypography>
+                <CustomTypography variant="caption" color="muted" sx={{ fontWeight: 600, mt: 0.5 }}>
                   {APP_VERSION}
-                </Typography>
+                </CustomTypography>
               </Box>
             </Toolbar>
           </AppBar>
-          <Container maxWidth="lg" sx={{ py: 6 }}>
+          
+          {/* メインコンテンツ */}
+          <Container maxWidth="lg" sx={{ py: 10 }}>
             <TaskStats />
-            <Box sx={{ display: 'flex', gap: 4, mb: 4 }}>
+            <Box sx={{ display: 'flex', gap: 8, mb: 8 }}>
               <Box sx={{ flex: 1 }}>
                 <AddTask />
               </Box>
@@ -127,14 +193,23 @@ const App: React.FC = () => {
             </Box>
             <TaskList />
           </Container>
+          
+          {/* フッター */}
           <Box component="footer" sx={{
             textAlign: 'center',
-            py: 4,
+            py: 7,
             mt: 'auto',
+            background: 'rgba(255,255,255,0.95)',
+            borderTop: '1.5px solid #e0e7ef',
+            fontWeight: 600,
+            color: '#64748b',
+            letterSpacing: 0.5,
+            fontSize: '1.08rem',
+            borderRadius: '32px', // 角丸追加
           }}>
-            <Typography variant="body2" color="#64748b" fontWeight={500}>
+            <CustomTypography variant="body2" color="muted" sx={{ fontWeight: 600 }}>
               © 2024 Ryuto Kobayashi
-            </Typography>
+            </CustomTypography>
           </Box>
         </Box>
       </ThemeProvider>

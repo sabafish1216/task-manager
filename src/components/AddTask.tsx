@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import {
   Box,
-  TextField,
-  Button,
-  FormControl,
   InputLabel,
   Select,
   MenuItem,
@@ -13,19 +10,39 @@ import {
   DialogActions,
 } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { Cancel, Add } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { addTask } from '../store/taskSlice';
-import { Priority } from '../types/task';
+import { Priority, Subtask } from '../types/task';
+import CustomButton from '../custom_props/CustomButton';
+import CustomTextField from '../custom_props/CustomTextField';
+import CustomFormControl from '../custom_props/CustomFormControl';
 
+import SubtaskManager from './SubtaskManager';
+import { COMMON_STYLES } from '../custom_props/styles';
+
+/**
+ * タスク追加コンポーネント
+ * 新しいタスクとサブタスクを作成・管理する
+ */
 const AddTask: React.FC = () => {
   const dispatch = useAppDispatch();
   const categories = useAppSelector((state) => state.categories.categories);
+  
+  // フォーム状態
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState<string>('');
   const [priority, setPriority] = useState<Priority>('medium');
   const [open, setOpen] = useState(false);
+  
+  // サブタスク状態
+  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
 
+  /**
+   * タスク追加処理
+   * @param e - フォームイベント
+   */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (title.trim()) {
@@ -35,66 +52,72 @@ const AddTask: React.FC = () => {
         categoryId: categoryId || null,
         priority,
         completed: false,
+        subtasks,
       }));
-      setTitle('');
-      setDescription('');
-      setCategoryId('');
-      setPriority('medium');
-      setOpen(false);
+      resetForm();
     }
   };
 
+  /**
+   * フォームキャンセル処理
+   */
   const handleCancel = () => {
+    resetForm();
+  };
+
+  /**
+   * フォーム状態をリセット
+   */
+  const resetForm = () => {
     setTitle('');
     setDescription('');
     setCategoryId('');
     setPriority('medium');
+    setSubtasks([]);
     setOpen(false);
   };
 
   return (
     <>
-      <Button
+      <CustomButton
         variant="contained"
         color="primary"
+        size="large"
         startIcon={<AddCircleIcon />}
         onClick={() => setOpen(true)}
-        sx={{
-          px: 4,
-          py: 1.5,
-          fontWeight: 700,
-          fontSize: '1rem',
-          mb: 2,
-          borderRadius: 3,
-          boxShadow: '0 2px 8px 0 rgba(25,118,210,0.08)',
-        }}
+        sx={{ mb: 2 }}
       >
-        ＋タスク追加
-      </Button>
+        タスク追加
+      </CustomButton>
+      
       <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
-        <DialogTitle>新しいタスクを追加</DialogTitle>
-        <DialogContent>
-          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1 }}>
-            <TextField
+        <DialogTitle sx={COMMON_STYLES.dialog.title}>
+          新しいタスクを追加
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 4, ...COMMON_STYLES.dialog.content }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 4, mt: 2 }}>
+            {/* タスク名入力 */}
+            <CustomTextField
               label="タスク名"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
               fullWidth
-              variant="outlined"
-              sx={{ background: '#f8fafc', borderRadius: 2 }}
             />
-            <TextField
+            
+            {/* 説明入力 */}
+            <CustomTextField
               label="説明（任意）"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               multiline
-              rows={3}
+              rows={4}
               fullWidth
-              variant="outlined"
-              sx={{ background: '#f8fafc', borderRadius: 2 }}
             />
-            <FormControl fullWidth sx={{ background: '#fff', borderRadius: 2 }}>
+            
+            {/* カテゴリ選択 */}
+            <CustomFormControl>
               <InputLabel>カテゴリ</InputLabel>
               <Select
                 value={categoryId}
@@ -120,88 +143,51 @@ const AddTask: React.FC = () => {
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
-            <FormControl fullWidth sx={{ background: '#fff', borderRadius: 2 }}>
+            </CustomFormControl>
+            
+            {/* 優先度選択 */}
+            <CustomFormControl>
               <InputLabel>優先度</InputLabel>
               <Select
                 value={priority}
                 label="優先度"
                 onChange={(e) => setPriority(e.target.value as Priority)}
               >
-                <MenuItem value="urgent">
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ width: 12, height: 12, backgroundColor: '#ef4444', borderRadius: '50%' }} />
-                    緊急
-                  </Box>
-                </MenuItem>
-                <MenuItem value="high">
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ width: 12, height: 12, backgroundColor: '#f97316', borderRadius: '50%' }} />
-                    高
-                  </Box>
-                </MenuItem>
-                <MenuItem value="medium">
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ width: 12, height: 12, backgroundColor: '#eab308', borderRadius: '50%' }} />
-                    中
-                  </Box>
-                </MenuItem>
-                <MenuItem value="low">
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ width: 12, height: 12, backgroundColor: '#22c55e', borderRadius: '50%' }} />
-                    低
-                  </Box>
-                </MenuItem>
+                <MenuItem value="urgent">緊急</MenuItem>
+                <MenuItem value="high">高</MenuItem>
+                <MenuItem value="medium">中</MenuItem>
+                <MenuItem value="low">低</MenuItem>
               </Select>
-            </FormControl>
+            </CustomFormControl>
+
+            {/* サブタスク管理 */}
+            <SubtaskManager
+              subtasks={subtasks}
+              onSubtasksChange={setSubtasks}
+            />
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={handleCancel}
+        
+        <DialogActions sx={{ px: 4, py: 2, ...COMMON_STYLES.dialog.actions }}>
+          <CustomButton 
+            onClick={handleCancel} 
+            startIcon={<Cancel />}
             variant="outlined"
-            sx={{
-              px: 3,
-              py: 1.2,
-              fontWeight: 600,
-              color: '#64748b',
-              borderColor: '#cbd5e1',
-              '&:hover': {
-                background: '#f1f5f9',
-                borderColor: '#94a3b8',
-              },
-            }}
+            color="primary"
+            size="medium"
           >
             キャンセル
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            disabled={!title.trim()}
-            sx={{
-              px: 4,
-              py: 1.2,
-              fontWeight: 700,
-              fontSize: '1rem',
-              background: title.trim() 
-                ? 'linear-gradient(90deg, #1976d2 60%, #1565c0 100%)'
-                : '#e5e7eb',
-              color: title.trim() ? '#fff' : '#9ca3af',
-              '&:hover': {
-                background: title.trim()
-                  ? 'linear-gradient(90deg, #1565c0 60%, #1976d2 100%)'
-                  : '#e5e7eb',
-              },
-              '&:disabled': {
-                background: '#e5e7eb',
-                color: '#9ca3af',
-                boxShadow: 'none',
-                transform: 'none',
-              },
-            }}
+          </CustomButton>
+          <CustomButton 
+            onClick={handleSubmit} 
+            variant="contained" 
+            disabled={!title.trim()} 
+            startIcon={<Add />}
+            color="primary"
+            size="medium"
           >
-            タスクを追加
-          </Button>
+            追加
+          </CustomButton>
         </DialogActions>
       </Dialog>
     </>

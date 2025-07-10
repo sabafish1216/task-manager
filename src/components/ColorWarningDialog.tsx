@@ -4,10 +4,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
-  Typography,
   Box,
 } from '@mui/material';
+import CustomButton from '../custom_props/CustomButton';
+import CustomTypography from '../custom_props/CustomTypography';
+import { COMMON_STYLES } from '../custom_props/styles';
 
 interface ColorWarningDialogProps {
   open: boolean;
@@ -17,6 +18,15 @@ interface ColorWarningDialogProps {
   similarColors: string[];
 }
 
+/**
+ * 色警告ダイアログコンポーネント
+ * 類似色が選択された際の確認ダイアログ
+ * @param open - ダイアログの表示状態
+ * @param onClose - キャンセル時のコールバック関数
+ * @param onConfirm - 確認時のコールバック関数
+ * @param newColor - 新しく選択された色
+ * @param similarColors - 類似している既存の色の配列
+ */
 const ColorWarningDialog: React.FC<ColorWarningDialogProps> = ({
   open,
   onClose,
@@ -26,13 +36,17 @@ const ColorWarningDialog: React.FC<ColorWarningDialogProps> = ({
 }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>類似色の警告</DialogTitle>
-      <DialogContent>
-        <Typography variant="body1" sx={{ mb: 2 }}>
+      <DialogTitle sx={COMMON_STYLES.dialog.title}>
+        類似色の警告
+      </DialogTitle>
+      
+      <DialogContent sx={{ p: 4, ...COMMON_STYLES.dialog.content }}>
+        <CustomTypography variant="body1" sx={{ mb: 2 }}>
           すでに追加されているカテゴリと類似した色が選択されています。よろしいですか？
-        </Typography>
+        </CustomTypography>
+        
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-          <Typography variant="body2">選択した色:</Typography>
+          <CustomTypography variant="body2">選択した色:</CustomTypography>
           <Box
             sx={{
               width: 24,
@@ -44,11 +58,12 @@ const ColorWarningDialog: React.FC<ColorWarningDialogProps> = ({
             }}
           />
         </Box>
+        
         {similarColors.length > 0 && (
           <Box>
-            <Typography variant="body2" sx={{ mb: 1 }}>
+            <CustomTypography variant="body2" sx={{ mb: 1 }}>
               類似している既存の色:
-            </Typography>
+            </CustomTypography>
             <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
               {similarColors.map((color, index) => (
                 <Box
@@ -67,39 +82,24 @@ const ColorWarningDialog: React.FC<ColorWarningDialogProps> = ({
           </Box>
         )}
       </DialogContent>
-      <DialogActions>
-        <Button 
+      
+      <DialogActions sx={{ px: 4, py: 2, ...COMMON_STYLES.dialog.actions }}>
+        <CustomButton 
           onClick={onClose}
           variant="outlined"
-          sx={{
-            px: 3,
-            py: 1.2,
-            fontWeight: 600,
-            color: '#64748b',
-            borderColor: '#cbd5e1',
-            '&:hover': {
-              background: '#f1f5f9',
-              borderColor: '#94a3b8',
-            },
-          }}
+          color="primary"
+          size="medium"
         >
           キャンセル
-        </Button>
-        <Button 
+        </CustomButton>
+        <CustomButton 
           onClick={onConfirm} 
           variant="contained"
-          sx={{
-            px: 4,
-            py: 1.2,
-            fontWeight: 700,
-            background: 'linear-gradient(90deg, #1976d2 60%, #1565c0 100%)',
-            '&:hover': {
-              background: 'linear-gradient(90deg, #1565c0 60%, #1976d2 100%)',
-            },
-          }}
+          color="primary"
+          size="medium"
         >
           続行
-        </Button>
+        </CustomButton>
       </DialogActions>
     </Dialog>
   );

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import {
   Box,
-  TextField,
-  Button,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -14,21 +12,37 @@ import ColorPicker from './ColorPicker';
 import ColorWarningDialog from './ColorWarningDialog';
 import { findSimilarColors, getRandomColor } from '../utils/colorUtils';
 import CategoryIcon from '@mui/icons-material/Category';
+import CustomButton from '../custom_props/CustomButton';
+import CustomTextField from '../custom_props/CustomTextField';
+import { COMMON_STYLES } from '../custom_props/styles';
+import { Add, Cancel } from '@mui/icons-material';
 
-
+/**
+ * カテゴリ追加コンポーネント
+ * 新しいカテゴリを作成・管理する
+ */
 const AddCategory: React.FC = () => {
   const dispatch = useAppDispatch();
   const categories = useAppSelector((state) => state.categories.categories);
+  
+  // フォーム状態
   const [name, setName] = useState('');
   const [color, setColor] = useState(getRandomColor());
   const [open, setOpen] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [pendingColor, setPendingColor] = useState(getRandomColor());
 
+  /**
+   * 色変更処理
+   * @param newColor - 新しい色
+   */
   const handleColorChange = (newColor: string) => {
     setColor(newColor);
   };
 
+  /**
+   * 警告ダイアログ確認処理
+   */
   const handleWarningConfirm = () => {
     console.log('handleWarningConfirm called', { name: name.trim(), color: pendingColor });
     dispatch(addCategory({
@@ -36,16 +50,21 @@ const AddCategory: React.FC = () => {
       color: pendingColor,
     }));
     console.log('Category added from warning, resetting form');
-    setName('');
-    setColor(getRandomColor());
-    setShowWarning(false);
+    resetForm();
   };
 
+  /**
+   * 警告ダイアログキャンセル処理
+   */
   const handleWarningCancel = () => {
     setShowWarning(false);
     // 警告をキャンセルした場合は何もしない（フォームは開いたまま）
   };
 
+  /**
+   * フォーム送信処理
+   * @param e - フォームイベント
+   */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('handleSubmit called', { name: name.trim(), color });
@@ -69,48 +88,52 @@ const AddCategory: React.FC = () => {
           color,
         }));
         console.log('Category added, resetting form');
-        setName('');
-        setColor(getRandomColor());
+        resetForm();
       }
     } else {
       console.log('Name is empty, not proceeding');
     }
   };
 
-  // handleCancel function removed as it's not used
+  /**
+   * フォーム状態をリセット
+   */
+  const resetForm = () => {
+    setName('');
+    setColor(getRandomColor());
+    setOpen(false);
+    setShowWarning(false);
+  };
 
   return (
     <>
-      <Button
+      <CustomButton
         variant="contained"
         color="secondary"
+        size="large"
         startIcon={<CategoryIcon />}
         onClick={() => setOpen(true)}
-        sx={{
-          px: 4,
-          py: 1.5,
-          fontWeight: 700,
-          fontSize: '1rem',
-          mb: 2,
-          borderRadius: 3,
-          boxShadow: '0 2px 8px 0 rgba(220,0,78,0.08)',
-        }}
+        sx={{ mb: 2 }}
       >
-        ＋カテゴリ追加
-      </Button>
+        カテゴリ追加
+      </CustomButton>
+      
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>新しいカテゴリを追加</DialogTitle>
-        <DialogContent>
-          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1 }}>
-            <TextField
+        <DialogTitle sx={COMMON_STYLES.dialog.title}>
+          新しいカテゴリを追加
+        </DialogTitle>
+        
+        <DialogContent sx={{ p: 4, ...COMMON_STYLES.dialog.content }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 4, mt: 2 }}>
+            {/* カテゴリ名入力 */}
+            <CustomTextField
               label="カテゴリ名"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               fullWidth
-              variant="outlined"
-              sx={{ background: '#f8fafc', borderRadius: 2 }}
             />
+            {/* 色選択 */}
             <ColorPicker
               color={color}
               onChange={handleColorChange}
@@ -118,53 +141,30 @@ const AddCategory: React.FC = () => {
             />
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button 
+        
+        <DialogActions sx={{ px: 4, py: 2, ...COMMON_STYLES.dialog.actions }}>
+          <CustomButton 
             onClick={() => setOpen(false)}
             variant="outlined"
-            sx={{
-              px: 3,
-              py: 1.2,
-              fontWeight: 600,
-              color: '#64748b',
-              borderColor: '#cbd5e1',
-              '&:hover': {
-                background: '#f1f5f9',
-                borderColor: '#94a3b8',
-              },
-            }}
+            color="primary"
+            size="medium"
+            startIcon={<Cancel />}
           >
             キャンセル
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
+          </CustomButton>
+          <CustomButton 
+            onClick={handleSubmit} 
+            variant="contained" 
             disabled={!name.trim()}
-            sx={{
-              px: 4,
-              py: 1.2,
-              fontWeight: 700,
-              fontSize: '1rem',
-              background: name.trim() 
-                ? 'linear-gradient(90deg, #1976d2 60%, #1565c0 100%)'
-                : '#e5e7eb',
-              color: name.trim() ? '#fff' : '#9ca3af',
-              '&:hover': {
-                background: name.trim()
-                  ? 'linear-gradient(90deg, #1565c0 60%, #1976d2 100%)'
-                  : '#e5e7eb',
-              },
-              '&:disabled': {
-                background: '#e5e7eb',
-                color: '#9ca3af',
-                transform: 'none',
-              },
-            }}
+            startIcon={<Add />}
+            color="primary"
+            size="medium"
           >
-            カテゴリを追加
-          </Button>
+            追加
+          </CustomButton>
         </DialogActions>
       </Dialog>
+      
       <ColorWarningDialog
         open={showWarning}
         onClose={handleWarningCancel}

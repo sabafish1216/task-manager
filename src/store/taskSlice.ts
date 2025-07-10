@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Task, TaskState } from '../types/task';
+import { Task, TaskState, Subtask } from '../types/task';
 
 const defaultTasks: Task[] = [
   {
@@ -11,6 +11,7 @@ const defaultTasks: Task[] = [
     completed: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    subtasks: [],
   },
   {
     id: '2',
@@ -21,6 +22,7 @@ const defaultTasks: Task[] = [
     completed: true,
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日前
     updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1日前に完了
+    subtasks: [],
   },
   {
     id: '3',
@@ -31,6 +33,7 @@ const defaultTasks: Task[] = [
     completed: false,
     createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1日前
     updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    subtasks: [],
   },
   {
     id: '4',
@@ -41,6 +44,7 @@ const defaultTasks: Task[] = [
     completed: true,
     createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3日前
     updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日前に完了
+    subtasks: [],
   },
 ];
 
@@ -61,6 +65,7 @@ const taskSlice = createSlice({
         id: Date.now().toString(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        subtasks: [],
       };
       state.tasks.push(newTask);
     },
@@ -85,8 +90,44 @@ const taskSlice = createSlice({
         state.tasks[taskIndex].updatedAt = new Date().toISOString();
       }
     },
+    // サブタスク追加
+    addSubtask: (state, action: PayloadAction<{ taskId: string; title: string }>) => {
+      const { taskId, title } = action.payload;
+      const task = state.tasks.find(t => t.id === taskId);
+      if (task) {
+        const newSubtask: Subtask = {
+          id: Date.now().toString(),
+          title,
+          completed: false,
+        };
+        if (!task.subtasks) task.subtasks = [];
+        task.subtasks.push(newSubtask);
+        task.updatedAt = new Date().toISOString();
+      }
+    },
+    // サブタスク削除
+    deleteSubtask: (state, action: PayloadAction<{ taskId: string; subtaskId: string }>) => {
+      const { taskId, subtaskId } = action.payload;
+      const task = state.tasks.find(t => t.id === taskId);
+      if (task && task.subtasks) {
+        task.subtasks = task.subtasks.filter(st => st.id !== subtaskId);
+        task.updatedAt = new Date().toISOString();
+      }
+    },
+    // サブタスク完了切り替え
+    toggleSubtaskComplete: (state, action: PayloadAction<{ taskId: string; subtaskId: string }>) => {
+      const { taskId, subtaskId } = action.payload;
+      const task = state.tasks.find(t => t.id === taskId);
+      if (task && task.subtasks) {
+        const subtask = task.subtasks.find(st => st.id === subtaskId);
+        if (subtask) {
+          subtask.completed = !subtask.completed;
+          task.updatedAt = new Date().toISOString();
+        }
+      }
+    },
   },
 });
 
-export const { addTask, updateTask, deleteTask, toggleTaskComplete } = taskSlice.actions;
+export const { addTask, updateTask, deleteTask, toggleTaskComplete, addSubtask, deleteSubtask, toggleSubtaskComplete } = taskSlice.actions;
 export default taskSlice.reducer; 
