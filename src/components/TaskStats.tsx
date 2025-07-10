@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import {
-  Bar,
   Line,
   XAxis,
   YAxis,
@@ -8,20 +7,32 @@ import {
   Tooltip,
   ResponsiveContainer,
   ComposedChart,
+  Bar,
+  ReferenceLine,
 } from 'recharts';
 import { Box, Typography, Paper } from '@mui/material';
 import { useAppSelector } from '../hooks/redux';
-import { calculateDailyStats, calculateOverallStats } from '../utils/statsUtils';
+import { calculateDailyStats, calculateOverallStats, adjustMaxValue } from '../utils/statsUtils';
 
 const TaskStats: React.FC = () => {
   const tasks = useAppSelector((state) => state.tasks.tasks);
   
   const chartData = useMemo(() => calculateDailyStats(tasks), [tasks]);
   const overallStats = useMemo(() => calculateOverallStats(tasks), [tasks]);
+  
+  // Y軸の最大値を計算（5の倍数に調整）
+  const maxValue = useMemo(() => {
+    const maxAdded = Math.max(...chartData.map(d => Math.abs(d.added)));
+    const maxCompleted = Math.max(...chartData.map(d => d.completed));
+    return adjustMaxValue(Math.max(maxAdded, maxCompleted));
+  }, [chartData]);
+
+  console.log(chartData);
 
   // カスタムツールチップ
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      const entry = payload[0];
       return (
         <Box
           sx={{
@@ -35,29 +46,15 @@ const TaskStats: React.FC = () => {
           <Typography variant="body2" fontWeight={600} color="#2d3748" mb={1}>
             {label}
           </Typography>
-          {payload.map((entry: any, index: number) => (
-            <Typography
-              key={index}
-              variant="body2"
-              sx={{
-                color: entry.color,
-                fontWeight: 500,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  width: 8,
-                  height: 8,
-                  backgroundColor: entry.color,
-                  borderRadius: '50%',
-                }}
-              />
-              {entry.name}: {entry.dataKey === 'added' ? Math.abs(entry.value) : entry.value}
-            </Typography>
-          ))}
+          <Typography variant="body2" sx={{ color: '#22c55e', fontWeight: 500 }}>
+            完了: {entry.payload.completedAbs}
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#1976d2', fontWeight: 500 }}>
+            追加: {entry.payload.addedAbs}
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#8b5cf6', fontWeight: 500 }}>
+            バランス: {entry.payload.cumulativeBalance}
+          </Typography>
         </Box>
       );
     }
@@ -123,7 +120,12 @@ const TaskStats: React.FC = () => {
       {/* グラフ */}
       <Box sx={{ height: 300 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <ComposedChart 
+            data={chartData} 
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            syncId="taskStats"
+            stackOffset="sign"
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
             <XAxis
               dataKey="date"
@@ -136,29 +138,20 @@ const TaskStats: React.FC = () => {
               axisLine={{ stroke: '#cbd5e1' }}
               tickLine={{ stroke: '#cbd5e1' }}
               tickFormatter={(value) => Math.abs(value).toString()}
+              domain={[-maxValue, maxValue]}
+              ticks={[-maxValue, -maxValue/2, 0, maxValue/2, maxValue]}
+              allowDataOverflow={false}
             />
             <Tooltip content={<CustomTooltip />} />
-            
-            {/* 完了タスク（上側の棒グラフ） */}
-            <Bar
-              dataKey="completed"
-              fill="#22c55e"
-              radius={[4, 4, 0, 0]}
-              name="完了"
-            />
-            
-            {/* 追加タスク（下側の棒グラフ） */}
-            <Bar
-              dataKey="added"
-              fill="#1976d2"
-              radius={[0, 0, 4, 4]}
-              name="追加"
-            />
-            
-            {/* バランス（折れ線グラフ） */}
+            <ReferenceLine y={0} stroke="#000" />
+            {/* 追加タスク（下側・青、負の値） */}
+            <Bar dataKey="added" fill="#1976d2" name="追加" stackId="stack" />
+            {/* 完了タスク（上側・緑、正の値） */}
+            <Bar dataKey="completed" fill="#22c55e" name="完了" stackId="stack" />
+            {/* バランス（累積・折れ線グラフ） */}
             <Line
               type="monotone"
-              dataKey="balance"
+              dataKey="cumulativeBalance"
               stroke="#8b5cf6"
               strokeWidth={3}
               dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 4 }}

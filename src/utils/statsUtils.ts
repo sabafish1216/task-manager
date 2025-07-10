@@ -5,6 +5,7 @@ export interface DailyStats {
   added: number;
   completed: number;
   balance: number; // added - completed
+  cumulativeBalance: number; // 累積バランス（完了-追加）
 }
 
 export interface ChartData {
@@ -12,6 +13,9 @@ export interface ChartData {
   added: number;
   completed: number;
   balance: number;
+  cumulativeBalance: number;
+  addedAbs: number;
+  completedAbs: number;
 }
 
 // 過去7日間の日付配列を生成
@@ -51,13 +55,25 @@ export const calculateDailyStats = (tasks: Task[]): ChartData[] => {
     }
   });
 
-  // グラフ用のデータ形式に変換（追加タスクは負の値として扱う）
-  return last7Days.map(date => ({
-    date: formatDateForDisplay(date),
-    added: -dailyStats[date].added, // 負の値にして下側に表示
-    completed: dailyStats[date].completed,
-    balance: dailyStats[date].added - dailyStats[date].completed,
-  }));
+  // 累積バランスを計算
+  let cumulativeAdded = 0;
+  let cumulativeCompleted = 0;
+
+  return last7Days.map(date => {
+    const added = dailyStats[date].added;
+    const completed = dailyStats[date].completed;
+    cumulativeAdded += added;
+    cumulativeCompleted += completed;
+    return {
+      date: formatDateForDisplay(date),
+      added: -added, // 負の値で下側
+      completed: completed, // 正の値で上側
+      balance: added - completed,
+      cumulativeBalance: cumulativeCompleted - cumulativeAdded, // 修正
+      addedAbs: added,
+      completedAbs: completed,
+    };
+  });
 };
 
 // 日付を表示用にフォーマット（MM/DD形式）
@@ -66,6 +82,12 @@ export const formatDateForDisplay = (dateString: string): string => {
   const month = date.getMonth() + 1;
   const day = date.getDate();
   return `${month}/${day}`;
+};
+
+// 最大値を5の倍数に調整する関数
+export const adjustMaxValue = (maxValue: number): number => {
+  if (maxValue <= 0) return 5;
+  return Math.ceil(maxValue / 5) * 5;
 };
 
 // 総合統計を計算
