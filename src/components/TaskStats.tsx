@@ -55,7 +55,7 @@ const TaskStats: React.FC = () => {
                   borderRadius: '50%',
                 }}
               />
-              {entry.name}: {entry.value}
+              {entry.name}: {entry.dataKey === 'added' ? Math.abs(entry.value) : entry.value}
             </Typography>
           ))}
         </Box>
@@ -135,6 +135,7 @@ const TaskStats: React.FC = () => {
               tick={{ fontSize: 12, fill: '#64748b' }}
               axisLine={{ stroke: '#cbd5e1' }}
               tickLine={{ stroke: '#cbd5e1' }}
+              tickFormatter={(value) => Math.abs(value).toString()}
             />
             <Tooltip content={<CustomTooltip />} />
             
@@ -144,7 +145,6 @@ const TaskStats: React.FC = () => {
               fill="#22c55e"
               radius={[4, 4, 0, 0]}
               name="完了"
-              stackId="a"
             />
             
             {/* 追加タスク（下側の棒グラフ） */}
@@ -153,7 +153,6 @@ const TaskStats: React.FC = () => {
               fill="#1976d2"
               radius={[0, 0, 4, 4]}
               name="追加"
-              stackId="b"
             />
             
             {/* バランス（折れ線グラフ） */}

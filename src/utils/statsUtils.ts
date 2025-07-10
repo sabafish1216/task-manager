@@ -51,10 +51,10 @@ export const calculateDailyStats = (tasks: Task[]): ChartData[] => {
     }
   });
 
-  // グラフ用のデータ形式に変換
+  // グラフ用のデータ形式に変換（追加タスクは負の値として扱う）
   return last7Days.map(date => ({
     date: formatDateForDisplay(date),
-    added: dailyStats[date].added,
+    added: -dailyStats[date].added, // 負の値にして下側に表示
     completed: dailyStats[date].completed,
     balance: dailyStats[date].added - dailyStats[date].completed,
   }));
