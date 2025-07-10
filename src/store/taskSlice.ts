@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Task, TaskState, Priority } from '../types/task';
+import { Task, TaskState } from '../types/task';
 
 const defaultTasks: Task[] = [
   {

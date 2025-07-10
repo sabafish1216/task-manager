@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Container, CssBaseline, ThemeProvider, createTheme, Box, Typography, AppBar, Toolbar, Tabs, Tab } from '@mui/material';
+import React from 'react';
+import { Container, CssBaseline, ThemeProvider, createTheme, Box, Typography, AppBar, Toolbar } from '@mui/material';
 import { Provider } from 'react-redux';
 import { store } from './store';
 import AddTask from './components/AddTask';
@@ -86,7 +86,6 @@ const theme = createTheme({
   },
 });
 
-const APP_NAME = 'TaskManager';
 const APP_VERSION = 'v1.0.0';
 
 const App: React.FC = () => {

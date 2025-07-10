@@ -3,8 +3,6 @@ import {
   Box,
   TextField,
   Button,
-  Paper,
-  Typography,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -78,10 +76,7 @@ const AddCategory: React.FC = () => {
     }
   };
 
-  const handleCancel = () => {
-    setName('');
-    setColor(getRandomColor());
-  };
+  // handleCancel function removed as it's not used
 
   return (
     <>

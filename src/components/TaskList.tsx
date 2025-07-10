@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Box, Typography, Paper, Divider, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { Box, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import TaskItem from './TaskItem';
 import { Priority } from '../types/task';
@@ -141,11 +141,11 @@ const TaskList: React.FC = () => {
   return (
     <Box sx={{ display: 'flex', gap: 6, overflowX: 'auto', pb: 1 }}>
       {categories.map((category) => {
-        const categoryTasks = categoryTaskMap[category.id];
-        const total = categoryTasks?.length ?? 0;
-        const completed = categoryTasks?.filter(task => task.completed).length ?? 0;
-        const incompleteTasks = categoryTasks?.filter(task => !task.completed) ?? [];
-        const completedTasks = categoryTasks?.filter(task => task.completed) ?? [];
+        // Task statistics variables (commented out as they're not used)
+        // const total = categoryTaskMap[category.id]?.length ?? 0;
+        // const completed = categoryTaskMap[category.id]?.filter(task => task.completed).length ?? 0;
+        // const incompleteTasks = categoryTaskMap[category.id]?.filter(task => !task.completed) ?? [];
+        // const completedTasks = categoryTaskMap[category.id]?.filter(task => task.completed) ?? [];
         return (
           <Box key={category.id} sx={{
             width: 510,
