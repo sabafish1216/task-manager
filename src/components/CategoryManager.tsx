@@ -96,14 +96,14 @@ const CategoryManager: React.FC = () => {
   };
 
   const handleDelete = (categoryId: string) => {
-    if (window.confirm('この分類を削除しますか？関連するタスクも削除されます。')) {
+    if (window.confirm('このカテゴリを削除しますか？関連するタスクも削除されます。')) {
       // 関連するタスクを削除
       tasks.forEach(task => {
         if (task.categoryId === categoryId) {
           dispatch(deleteTask(task.id));
         }
       });
-      // 分類を削除
+      // カテゴリを削除
       dispatch(deleteCategory(categoryId));
     }
   };
@@ -111,7 +111,7 @@ const CategoryManager: React.FC = () => {
   return (
     <>
       <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
-        分類管理
+        カテゴリ管理
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {categories.map((category) => {

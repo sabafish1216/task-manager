@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { addTask } from '../store/taskSlice';
 import { Priority } from '../types/task';
@@ -56,6 +57,7 @@ const AddTask: React.FC = () => {
       <Button
         variant="contained"
         color="primary"
+        startIcon={<AddCircleIcon />}
         onClick={() => setOpen(true)}
         sx={{
           px: 4,
@@ -63,6 +65,8 @@ const AddTask: React.FC = () => {
           fontWeight: 700,
           fontSize: '1rem',
           mb: 2,
+          borderRadius: 3,
+          boxShadow: '0 2px 8px 0 rgba(25,118,210,0.08)',
         }}
       >
         ＋タスク追加
@@ -91,14 +95,14 @@ const AddTask: React.FC = () => {
               sx={{ background: '#f8fafc', borderRadius: 2 }}
             />
             <FormControl fullWidth sx={{ background: '#fff', borderRadius: 2 }}>
-              <InputLabel>分類</InputLabel>
+              <InputLabel>カテゴリ</InputLabel>
               <Select
                 value={categoryId}
-                label="分類"
+                label="カテゴリ"
                 onChange={(e) => setCategoryId(e.target.value)}
               >
                 <MenuItem value="">
-                  <em>分類なし</em>
+                  <em>カテゴリなし</em>
                 </MenuItem>
                 {categories.map((category) => (
                   <MenuItem key={category.id} value={category.id}>

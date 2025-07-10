@@ -13,6 +13,7 @@ import { addCategory } from '../store/categorySlice';
 import ColorPicker from './ColorPicker';
 import ColorWarningDialog from './ColorWarningDialog';
 import { findSimilarColors, getRandomColor } from '../utils/colorUtils';
+import CategoryIcon from '@mui/icons-material/Category';
 
 
 const AddCategory: React.FC = () => {
@@ -82,7 +83,8 @@ const AddCategory: React.FC = () => {
     <>
       <Button
         variant="contained"
-        color="primary"
+        color="secondary"
+        startIcon={<CategoryIcon />}
         onClick={() => setOpen(true)}
         sx={{
           px: 4,
@@ -90,16 +92,18 @@ const AddCategory: React.FC = () => {
           fontWeight: 700,
           fontSize: '1rem',
           mb: 2,
+          borderRadius: 3,
+          boxShadow: '0 2px 8px 0 rgba(220,0,78,0.08)',
         }}
       >
-        ＋分類追加
+        ＋カテゴリ追加
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>新しい分類を追加</DialogTitle>
+        <DialogTitle>新しいカテゴリを追加</DialogTitle>
         <DialogContent>
           <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1 }}>
             <TextField
-              label="分類名"
+              label="カテゴリ名"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -157,7 +161,7 @@ const AddCategory: React.FC = () => {
               },
             }}
           >
-            分類を追加
+            カテゴリを追加
           </Button>
         </DialogActions>
       </Dialog>

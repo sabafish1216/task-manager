@@ -21,6 +21,7 @@ import { Delete, Edit, Save, Cancel, PriorityHigh, TrendingUp, Remove, TrendingD
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { updateTask, deleteTask, toggleTaskComplete } from '../store/taskSlice';
 import { Task, Priority } from '../types/task';
+import { grey } from '@mui/material/colors';
 
 interface TaskItemProps {
   task: Task;
@@ -248,16 +249,17 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
             />
             <Box sx={{ flexGrow: 1, minWidth: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, minWidth: 0 }}>
-                <Typography variant="h6" component="div" sx={{
-                  overflow: isExpanded ? 'visible' : 'hidden',
-                  textOverflow: isExpanded ? 'clip' : 'ellipsis',
-                  whiteSpace: isExpanded ? 'normal' : 'nowrap',
-                  width: '100%',
-                  fontWeight: 700,
-                  color: '#2d3748',
-                  letterSpacing: 0.5,
-                  wordBreak: 'break-word',
-                }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: task.completed ? grey[400] : '#2d3748',
+                    fontWeight: 600,
+                    textDecoration: task.completed ? 'line-through' : 'none',
+                    fontSize: '1.1rem',
+                    letterSpacing: 0.5,
+                    mb: 0.5,
+                  }}
+                >
                   {task.title}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: 2 }}>

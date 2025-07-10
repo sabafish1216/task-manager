@@ -126,14 +126,14 @@ const TaskList: React.FC = () => {
   }, []);
 
   const handleDelete = useCallback((categoryId: string) => {
-    if (window.confirm('この分類を削除しますか？関連するタスクも削除されます。')) {
+    if (window.confirm('このカテゴリを削除しますか？関連するタスクも削除されます。')) {
       // 関連するタスクを削除
       tasks.forEach(task => {
         if (task.categoryId === categoryId) {
           dispatch(deleteTask(task.id));
         }
       });
-      // 分類を削除
+      // カテゴリを削除
       dispatch(deleteCategory(categoryId));
     }
   }, [dispatch, tasks]);
@@ -279,11 +279,11 @@ const TaskList: React.FC = () => {
       )}
       {/* 分類編集ダイアログ */}
       <Dialog open={!!editingCategory} onClose={handleCancel} maxWidth="sm" fullWidth>
-        <DialogTitle>分類を編集</DialogTitle>
+        <DialogTitle>カテゴリを編集</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
             <TextField
-              label="分類名"
+              label="カテゴリ名"
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
               fullWidth

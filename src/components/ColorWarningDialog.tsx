@@ -29,7 +29,7 @@ const ColorWarningDialog: React.FC<ColorWarningDialogProps> = ({
       <DialogTitle>類似色の警告</DialogTitle>
       <DialogContent>
         <Typography variant="body1" sx={{ mb: 2 }}>
-          すでに追加されている分類と類似した色が選択されています。よろしいですか？
+          すでに追加されているカテゴリと類似した色が選択されています。よろしいですか？
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
           <Typography variant="body2">選択した色:</Typography>
