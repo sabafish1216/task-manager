@@ -12,6 +12,36 @@ const defaultTasks: Task[] = [
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
+  {
+    id: '2',
+    title: '統計グラフの実装',
+    description: 'Rechartsを使ってタスクの統計を視覚化するグラフを作成する',
+    categoryId: '3',
+    priority: 'high',
+    completed: true,
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日前
+    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1日前に完了
+  },
+  {
+    id: '3',
+    title: 'UIデザインの改善',
+    description: 'Material-UIを使ってモダンなデザインに改善する',
+    categoryId: '3',
+    priority: 'medium',
+    completed: false,
+    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1日前
+    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '4',
+    title: 'テストデータの追加',
+    description: 'グラフ表示のためのテストデータを追加する',
+    categoryId: '3',
+    priority: 'low',
+    completed: true,
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3日前
+    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2日前に完了
+  },
 ];
 
 const initialState: TaskState = {

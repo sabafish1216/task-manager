@@ -5,6 +5,7 @@ import { store } from './store';
 import AddTask from './components/AddTask';
 import TaskList from './components/TaskList';
 import AddCategory from './components/AddCategory';
+import TaskStats from './components/TaskStats';
 
 const theme = createTheme({
   palette: {
@@ -115,6 +116,7 @@ const App: React.FC = () => {
             </Toolbar>
           </AppBar>
           <Container maxWidth="lg" sx={{ py: 6 }}>
+            <TaskStats />
             <Box sx={{ display: 'flex', gap: 4, mb: 4 }}>
               <Box sx={{ flex: 1 }}>
                 <AddTask />
